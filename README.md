@@ -33,7 +33,7 @@ for Cluster:
 * The Rest service must be enabled in the ZFSSA.
 * Be careful about the sensor frequency, the pools takes some time to return a response depending on you configuration.
 * You need Administrator privileges in the PRTG server to copy the scripts, install pip and the packages with pip.
-* Copy the file **prtg.custom.yesno.problems.ovl** to the custom lookups directory "\lookups\custom" (example: *C:\Program Files (x86)\PRTG Network Monitor\lookups\customn*).
+* Copy the file **prtg.custom.yesno.problems.ovl** to the custom lookups directory "\lookups\custom" (example: *C:\Program Files (x86)\PRTG Network Monitor\lookups\custom*), for more info check <https://www.paessler.com/manuals/prtg/define_lookups>.
 
 ### Available status at the moment:
 
