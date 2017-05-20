@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# @Author: Aldo Sotolongo
-# @Date:   2017-05-09 10:09:51
-# @Last Modified by:   aldenso
-# @Last Modified time: 2017-05-16 14:45:26
-# Description: prtg script to monitor zfs pools status, pool usage percent
+# @CreateTime: May 9, 2017 10:09 AM 
+# @Author: Aldo Sotolongo 
+# @Contact: aldenso@gmail.com 
+# @Last Modified By: Aldo Sotolongo
+# @Last Modified Time: May 20, 2017 11:50 AM
+# @Description: prtg script to monitor zfs pools status, pool usage percent
 # and problems in a cluster or standalone ZFSSA.
 # Usage: on additional parameters for sensor you can use:
 # --hosts <zfssa1_ip,zfssa2_ip> --username <username> --password <password>
@@ -32,11 +33,11 @@ PASSWORD = ""
 ###############################################################################
 # Get PRTG Additional Parameters
 ###############################################################################
-prtgparams = json.loads(sys.argv[1:][0])
-params = str.split(prtgparams["params"])
-opts, args = getopt.getopt(params, "h:u:p",
+PRTGPARAMS = json.loads(sys.argv[1:][0])
+PARAMS = str.split(PRTGPARAMS["params"])
+OPTS, ARGS = getopt.getopt(PARAMS, "h:u:p",
                            ["hosts=", "username=", "password=", ])
-for opt, arg in opts:
+for opt, arg in OPTS:
     if opt in ("-h", "--hosts"):
         HOSTS = arg.split(",")
     elif opt in ("-u", "--username"):
@@ -62,6 +63,7 @@ channels = CustomSensorResult()
 # functions
 ###############################################################################
 def checkpools(host):
+    """Check Pools status and usage."""
     try:
         req = requests.get(url="https://{}:215/api/storage/v1/pools"
                            .format(host),
@@ -84,34 +86,29 @@ def checkpools(host):
                                          unit="Percent",
                                          limit_max_warning=85,
                                          limit_max_error=90,
-                                         is_limit_mode=1
-                                         )
+                                         is_limit_mode=1)
                     if pool['status'] == "online":
                         channels.add_channel(channel_name="{} Status"
                                              .format(pool['name']),
                                              value=0,
                                              value_lookup=VALUELOOKUP,
-                                             unit="Custom"
-                                             )
+                                             unit="Custom")
                     else:
                         channels.add_channel(channel_name="{} Status"
                                              .format(pool['name']),
                                              value=1,
                                              value_lookup=VALUELOOKUP,
-                                             unit="Custom"
-                                             )
+                                             unit="Custom")
     except Exception:
         if channels.sensor_message == "OK":
-            channels.sensor_message = "| can't check pools |"
+            channels.sensor_message = "| can't check pools in {} |".format(host)
         else:
-            channels.sensor_message += "| can't check pools |"
+            channels.sensor_message += "| can't check pools in {} |".format(host)
 
 
 def checkproblems(host, key):
-    if key == 0:
-        PRIMARY = True
-    else:
-        PRIMARY = False
+    """Check for problems in ZFSSA."""
+    primary = bool(key == 0)
     try:
         req = requests.get(url="https://{}:215/api/problem/v1/problems"
                            .format(host),
@@ -139,30 +136,30 @@ def checkproblems(host, key):
                                  value=1,
                                  value_lookup=VALUELOOKUP,
                                  unit="Custom",
-                                 primary_channel=PRIMARY
-                                 )
+                                 primary_channel=primary)
         else:
             channels.add_channel(channel_name="zfssa problems {}"
                                  .format(host),
                                  value=0,
                                  value_lookup=VALUELOOKUP,
                                  unit="Custom",
-                                 primary_channel=PRIMARY
-                                 )
+                                 primary_channel=primary)
     except Exception:
         if channels.sensor_message == "OK":
-            channels.sensor_message = "| can't check problems |"
+            channels.sensor_message = "| can't check problems in {} |".format(host)
         else:
-            channels.sensor_message += "| can't check problems |"
+            channels.sensor_message += "| can't check problems in {} |".format(host)
 
 
 def main():
     for key, host in enumerate(HOSTS):
         checkproblems(host, key)
         checkpools(host)
+    if not channels.channels:
+        channels.add_error("No channels can be retrieved")
     # Make sure return text max length is 2000 characters
     if len(channels.sensor_message) > 2000:
-        channels.sensor_message = channels[:2000]
+        channels.sensor_message = channels.sensor_message[:2000]
 
 
 if __name__ == "__main__":
