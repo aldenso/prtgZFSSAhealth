@@ -14,7 +14,8 @@ import sys
 import json
 import getopt
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+# from requests.packages.urllib3.exceptions import InsecureRequestWarning  # for older requests
+from urllib3.exceptions import InsecureRequestWarning
 from paepy.ChannelDefinition import CustomSensorResult
 
 # to disable warning
@@ -160,9 +161,7 @@ def main():
     # Make sure return text max length is 2000 characters
     if len(channels.sensor_message) > 2000:
         channels.sensor_message = channels.sensor_message[:2000]
-
+    print(channels.get_json_result())
 
 if __name__ == "__main__":
     main()
-
-print(channels.get_json_result())
