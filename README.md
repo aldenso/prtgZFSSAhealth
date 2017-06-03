@@ -4,12 +4,24 @@ PRTG Python Advanced script to get health status from ZFSSA using Rest service.
 
 ## Dependencies
 
-request (use pip) and paepy (included in prtg).
+request (use pip and the [requirements.txt](requirements.txt) file provided) and paepy (included in prtg).
 
 It is a good idea to get pip for your prtg server, so use any of the following links in how to get pip:
 
 * <https://packaging.python.org/installing/#requirements-for-installing-packages>
 * <https://github.com/BurntSushi/nfldb/wiki/Python-&-pip-Windows-installation>
+
+Open powershell with privileges.
+
+```text
+Start-Process powershell -Verb runAs
+```
+
+Then install the requirements.
+
+```text
+& 'C:\Program Files (x86)\PRTG Network Monitor\Python34\Scripts\pip.exe' install -r requirements.txt
+```
 
 ### Usage
 
@@ -35,9 +47,8 @@ for Cluster:
 * You need Administrator privileges in the PRTG server to copy the scripts, install pip and the packages with pip.
 * Copy the file **prtg.custom.yesno.problems.ovl** to the custom lookups directory "\lookups\custom" (example: *C:\Program Files (x86)\PRTG Network Monitor\lookups\custom*), for more info check <https://www.paessler.com/manuals/prtg/define_lookups>.
 
-### Available status at the moment:
+### Available status at the moment
 
 * System problems.
 * Pools status
 * Pools Usage Percent (Warning: 85, Error: 90 )
-
