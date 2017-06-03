@@ -33,11 +33,11 @@ In **Additional Parameters** tab, use some pattern like the next examples:
 
 for Standalone:
 
-    --host <zfssanode1> --username <username> --password <password>
+    --hosts <zfssanode1> --username <username> --password <password>
 
 for Cluster:
 
-    --host <zfssanode1,zfssanode2> --username <username> --password <password>
+    --hosts <zfssanode1,zfssanode2> --username <username> --password <password>
 
 ### Notes
 
